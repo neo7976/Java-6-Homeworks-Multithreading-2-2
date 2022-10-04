@@ -12,7 +12,7 @@ import java.util.concurrent.locks.ReentrantLock;
 public class Main {
 
     public final static int ISSUE = 6;
-    public final static int TIME_ADMISSION = 1000;
+    public final static int TIME_ADMISSION = 3000;
     public final static int TIME_PEOPLE_BUY = 2500;
 
     public static void main(String[] args) {
@@ -23,10 +23,10 @@ public class Main {
         Thread carThread = new Thread(() -> {
             CarImp newCar = null;
             int value;
-            locker.lock();
-            try {
-                for (int i = 0; i < ISSUE; i++) {
-                    value = random.nextInt(3);
+            for (int i = 0; i < ISSUE; i++) {
+                value = random.nextInt(3);
+                locker.lock();
+                try {
                     switch (value) {
                         case 0 -> auto.add(newCar = new Toyota("Camry", 2016));
                         case 1 -> auto.add(newCar = new Volvo("XC90", 2021));
@@ -38,10 +38,9 @@ public class Main {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
+                } finally {
+                    locker.unlock();
                 }
-
-            } finally {
-                locker.unlock();
             }
         });
         carThread.start();

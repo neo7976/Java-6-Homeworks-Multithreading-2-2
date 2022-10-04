@@ -25,21 +25,24 @@ public class Buyer extends Thread {
         try {
             while (thread.isAlive()) {
                 System.out.println(Thread.currentThread().getName() + " зашёл в магазин");
-                locker.lock();
+//                locker.lock();
                 if (list.isEmpty()) {
                     System.out.println("Машин нет");
+//                    locker.unlock();
                 } else {
                     System.out.printf("%s купил %s.\n",
                             Thread.currentThread().getName(),
                             list.remove(0));
+//                    locker.unlock();
                 }
                 Thread.sleep(time);
             }
         } catch (InterruptedException e) {
             e.printStackTrace();
-        } finally {
-            locker.unlock();
         }
+//        finally {
+//            locker.unlock();
+//        }
     }
 }
 
