@@ -10,7 +10,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class Main {
 
-    public final static int ISSUE = 6;
+    public final static int ISSUE = 10;
     public final static int TIME_ADMISSION = 3000;
     public final static int TIME_PEOPLE_BUY = 1000;
 
