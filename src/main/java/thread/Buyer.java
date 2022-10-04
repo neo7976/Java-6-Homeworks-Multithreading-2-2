@@ -11,31 +11,28 @@ public class Buyer extends Thread {
     private final List<CarImp> list;
     private Thread thread;
     ReentrantLock locker;
-    Condition condition;
 
-    public Buyer(int time, List<CarImp> list, Thread thread, ReentrantLock lock, Condition condition) {
+    public Buyer(int time, List<CarImp> list, Thread thread, ReentrantLock lock) {
         this.time = time;
         this.list = list;
         this.thread = thread;
         this.locker = lock;
-        this.condition = condition;
     }
 
     @Override
     public void run() {
-        locker.lock();
+//        boolean locked = false;
         try {
             while (thread.isAlive()) {
                 System.out.println(Thread.currentThread().getName() + " зашёл в магазин");
+                locker.lock();
                 if (list.isEmpty()) {
                     System.out.println("Машин нет");
-                    while (list.isEmpty())
-                        condition.wait();
+                } else {
+                    System.out.printf("%s купил %s.\n",
+                            Thread.currentThread().getName(),
+                            list.remove(0));
                 }
-                System.out.printf("%s купил %s.\n",
-                        Thread.currentThread().getName(),
-                        list.remove(0));
-                condition.signal();
                 Thread.sleep(time);
             }
         } catch (InterruptedException e) {
