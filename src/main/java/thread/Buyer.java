@@ -29,17 +29,14 @@ public class Buyer extends Thread {
                 System.out.println(Thread.currentThread().getName() + " зашёл в магазин");
                 if (list.isEmpty()) {
                     System.out.println("Машин нет");
-                    condition.wait();
-                } else {
-                    System.out.printf("%s купил %s.\n",
-                            Thread.currentThread().getName(),
-                            list.remove(0));
+                    while (list.isEmpty())
+                        condition.wait();
                 }
-                try {
-                    Thread.sleep(time);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+                System.out.printf("%s купил %s.\n",
+                        Thread.currentThread().getName(),
+                        list.remove(0));
+                condition.signal();
+                Thread.sleep(time);
             }
         } catch (InterruptedException e) {
             e.printStackTrace();

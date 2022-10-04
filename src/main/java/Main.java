@@ -26,23 +26,18 @@ public class Main {
             int value;
             for (int i = 0; i < ISSUE; i++) {
                 value = random.nextInt(3);
-                locker.lock();
-                try {
                     switch (value) {
                         case 0 -> auto.add(newCar = new Toyota("Camry", 2016));
                         case 1 -> auto.add(newCar = new Volvo("XC90", 2021));
                         case 2 -> auto.add(newCar = new Toyota("RAV4", 2019));
                     }
                     newCar.admission();
-                    condition.signal();
+//                    condition.signalAll();
                     try {
                         Thread.sleep(TIME_ADMISSION);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                } finally {
-                    locker.unlock();
-                }
             }
         });
         carThread.start();
