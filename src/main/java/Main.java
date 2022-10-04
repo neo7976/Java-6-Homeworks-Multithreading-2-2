@@ -25,8 +25,8 @@ public class Main {
             int value;
             for (int i = 0; i < ISSUE; i++) {
                 value = random.nextInt(3);
-//                locker.lock();
-//                try {
+                locker.lock();
+                try {
                     switch (value) {
                         case 0 -> auto.add(newCar = new Toyota("Camry", 2016));
                         case 1 -> auto.add(newCar = new Volvo("XC90", 2021));
@@ -38,9 +38,9 @@ public class Main {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-//                } finally {
-//                    locker.unlock();
-//                }
+                } finally {
+                    locker.unlock();
+                }
             }
         });
         carThread.start();
