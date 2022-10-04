@@ -21,20 +21,37 @@ public class Buyer extends Thread {
 
     @Override
     public void run() {
-//        boolean locked = false;
         try {
             while (thread.isAlive()) {
                 locker.lock();
+                boolean locked = true;
                 System.out.println(Thread.currentThread().getName() + " зашёл в магазин");
                 if (list.isEmpty()) {
                     System.out.printf("%s ушёл без машины\n", Thread.currentThread().getName());
+                    locker.unlock();
+                    while (locked) {
+                        locker.lock();
+                        if (!list.isEmpty()) {
+                            System.out.printf("%s купил %s.\n",
+                                    Thread.currentThread().getName(),
+                                    list.remove(0));
+                            locked = false;
+                        } else {
+                            System.out.println("Ждём этой очереди" + Thread.currentThread().getName());
+                            locker.unlock();
+                        }
+                    }
                 } else {
                     System.out.printf("%s купил %s.\n",
                             Thread.currentThread().getName(),
                             list.remove(0));
                 }
-                locker.unlock();
                 Thread.sleep(time);
+                locker.unlock();
+                locker.lock();
+                System.out.println("Я уже купил, я отдыхаю " + Thread.currentThread().getName());
+                Thread.sleep(time);
+                locker.unlock();
             }
         } catch (InterruptedException e) {
             e.printStackTrace();
