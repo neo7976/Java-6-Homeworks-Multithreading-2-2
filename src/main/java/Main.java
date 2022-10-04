@@ -17,7 +17,7 @@ public class Main {
 
     public static void main(String[] args) {
         List<CarImp> auto = new ArrayList<>();
-        ReentrantLock locker = new ReentrantLock(true);
+        ReentrantLock locker = new ReentrantLock();
         Random random = new Random();
 
         Thread carThread = new Thread(() -> {
