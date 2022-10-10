@@ -9,8 +9,10 @@ import java.util.concurrent.locks.ReentrantLock;
 public class Main {
 
     public final static int ISSUE = 10;
+    public final static int PEOPLE_BUY = 5;
     public final static int TIME_ADMISSION = 1000;
     public final static int TIME_PEOPLE_BUY = 2000;
+
 
     public static void main(String[] args) {
         List<CarImp> auto = new ArrayList<>();
@@ -49,29 +51,25 @@ public class Main {
             try {
                 while (!carThread.isInterrupted()) {
                     locker.lock();
-                    System.out.println(Thread.currentThread().getName() + " зашёл в магазин");
-                    Thread.sleep(TIME_PEOPLE_BUY);
-                    if (auto.isEmpty()) {
-                        if (carThread.isInterrupted()) {
-                            System.out.printf("%s остановлен", Thread.currentThread().getName());
-                            Thread.currentThread().interrupt();
+                    for (int i = 1; i <= PEOPLE_BUY; i++) {
+                        System.out.println(Thread.currentThread().getName() + "-" + i + " зашёл в магазин");
+                        if (auto.isEmpty()) {
+                            System.out.printf("%s-%d встал в очередь на машину\n", Thread.currentThread().getName(), i);
+                            condition.await();
                         }
-                        System.out.printf("%s встал в очередь на машину\n", Thread.currentThread().getName());
-                        condition.await();
+                        System.out.printf("%s-%d купил автомобиль - %s\n", Thread.currentThread().getName(), i, auto.remove(0));
+                        Thread.sleep(TIME_PEOPLE_BUY);
                     }
-                    System.out.printf("%s купил автомобиль - %s\n", Thread.currentThread().getName(), auto.remove(0));
-                    Thread.sleep(TIME_PEOPLE_BUY);
-//                    locker.unlock();
                 }
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
+            } finally {
+                locker.unlock();
             }
         };
 
-        for (int i = 1; i <= 5; i++) {
-            Thread buy = new Thread(buyer);
-            buy.setName("Покупатель " + i);
-            buy.start();
-        }
+        Thread buy = new Thread(buyer);
+        buy.setName("Покупатель");
+        buy.start();
     }
 }
